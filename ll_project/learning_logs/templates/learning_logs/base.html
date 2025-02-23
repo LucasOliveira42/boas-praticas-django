@@ -1,0 +1,14 @@
+ <!-- Todo o sistema de pastas(templates e learning_logs) precisa ser add
+  manualmente à aplicação learning_logs, acredito que a redundância na
+  nomenclatura das pastas seja para facilitar o referenciamento e identificação
+  dentro do código.
+    O objetivo do base.html é criar um esqueleto base que será reutilizado todas ou
+em quase todas as páginas da aplicação -->
+<p>
+    <a href="{% url 'learning_logs:index' %}">Registros de Aprendizagem</a>
+    <a href="{% url 'learning_logs:topics' %}">Tópicos</a>
+</p>
+
+{% block content %}{% endblock content %}
+ <!-- Cria o sistema de bloco de conteúdo, uma vez que esta página for extendida em uma
+  outra página, este código será implementado acima de onde o bloco de conteúdo for implementado  -->

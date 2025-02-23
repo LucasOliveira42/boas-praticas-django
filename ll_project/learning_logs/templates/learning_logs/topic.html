@@ -1,0 +1,24 @@
+{% extends 'learning_logs/base.html' %}
+
+{% block content %}
+
+<p>Tópico: {{ topic.text }}</p>
+
+<p>Entradas:</p>
+<ul>
+    {% for entry in entries %}
+    <li>
+        <p>{{ entry.date_added|date:'d, M, Y H:i' }}</p>
+        <!-- A linha vertical(|) representa um filtro de template, função do template
+         que modifica o valor de uma variável de template durante o processo de renderização -->
+
+        <p>{{ entry.text|linebreaks }}</p>
+        <!-- O filtro linebreaks assegura que entradas extensas de t4exto incluam quebras de
+         linha em um formato compreendido pelos navegadores -->
+    </li>
+    {% empty %}
+    <li>Não existem entradas para este tópico</li>
+    {% endfor %}
+</ul>
+
+{%endblock content%}

@@ -1,4 +1,11 @@
-<p>Registros de Aprendizagem</p>
+{% extends 'learning_logs/base.html' %}
+ <!-- Vai importar o base.html que está na mesma pasta que este arquivo -->
+
+{% block content %}
+ <!-- Faz com que o template pai seja implmentado ao código, fazendo parte da estrutura
+  de bloco de conteúdo -->
 
 <p>Registro de Aprendizagem ajuda você a se manter "atualziado", sobre qualquer tópico
 do seu interesse</p>
+
+{% endblock content %}

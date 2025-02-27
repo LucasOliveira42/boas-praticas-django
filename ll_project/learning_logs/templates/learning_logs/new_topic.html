@@ -1,0 +1,21 @@
+{% extends 'learning_logs/base.html' %}
+
+{% block content %}
+
+<p>Adicione um novo tópico:</p>
+
+<form action="{% url 'learning_logs:new_topic' %}" method='POST'>
+    <!-- O argumento action informa ao navegador para onde enviar os dados fornecidos no formulário HTML  -->
+
+    {% csrf_token %}
+    <!-- O django utuliza essa tokenização para umpedir que pessoas não autorizadas tenham acesso ao servidor
+     através de cross-site request forgery, inclusive, o django bloqueia forms que não estiverem com essa especificação  -->
+
+    {{ form.as_div }}
+    <!-- Para exibir um formulário no django, basta usar a variável de template para q o django crie todos os campos
+     automaticamente, o modificador 'as_div' instrui o django a renderizar todos os elementso do formulario como elementos div  -->
+
+    <button name="submit">Adicionar Tópico</button>
+</form>
+
+{% endblock content %}

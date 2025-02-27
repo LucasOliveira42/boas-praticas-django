@@ -1,0 +1,12 @@
+{% block content %}
+
+<p> <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic.text }}</a></p>
+
+<p>Adicione uma nova entrada:</p>
+<form action="{% url 'learning_logs:new_entry' topic.id %}" method='POST'>
+    {% csrf_token %}
+    {{ form.as_div }}
+    <button name ='submit'>Adicione a entrada</button>
+</form>
+
+{% endblock content %}

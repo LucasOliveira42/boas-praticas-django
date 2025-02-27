@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Topic
+from .forms import TopicForm, EntryForm
 
 def index(request):
     """A página inicial do Registro de Aprendizagem"""
@@ -32,3 +33,46 @@ def topic(request,topic_id):
     """Armazena os objetos retornados da tabela de topics e da tabela de entries dentro do 
     dicionário de contexto"""
     return render(request, 'learning_logs/topic.html', context)
+
+
+def new_topic(request):
+    if request.method != 'POST':
+        # Nenhum dado enviado; cria um formulário em branco
+        form = TopicForm
+
+    else:
+        # Dados POST enviados; processa os dados
+        form = TopicForm(data=request.POST)
+        # colocamos em form uma instância de TopicForm na qual recebe as informações envaidas
+        # pelo usuário, que obtemos através do request.post
+
+        if form.is_valid():
+            # é importante realizar a verificação da validade dos dados antes de salva-los no bd
+            form.save()
+            return redirect('learning_logs:topics')
+        
+    # Exibe um formulário em branco ou inválido
+    context = {'form':form}
+    return render(request, 'learning_logs/new_topic.html', context)
+
+
+def new_entry(request, topic_id):
+    topic = Topic.objects.get(id=topic_id)
+
+    if request.method != "POST":
+        #nenhum dado enviado, cria um formulário em branco
+        form = EntryForm
+    else:
+        # dados POST enviados; processa os dados
+        form = EntryForm(data=request.POST)
+        if form.is_valid():
+            new_entry = form.save(commit=False)
+            """Intrui o Django a criar um objeto de entrada e atribuílo a new_entry, sem salva-lo
+            no bd para que se possa add o topic ao objeto na linha abaixo"""
+            new_entry.topic = topic
+            new_entry.save()
+            return redirect('learning_logs:topic', topic_id=topic_id)
+        
+    # Exibe um formulário em branco ou inválido
+    context = {'topic' : topic, 'form':form}
+    return render(request, 'learning_logs/new_entry.html', context)

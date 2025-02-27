@@ -5,6 +5,9 @@
 <p>Tópico: {{ topic.text }}</p>
 
 <p>Entradas:</p>
+<p>
+    <a href="{% url 'learning_logs:new_entry' topic.id %}">Adiicione uma nova entrada</a>
+</p>
 <ul>
     {% for entry in entries %}
     <li>

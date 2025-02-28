@@ -18,6 +18,10 @@
         <p>{{ entry.text|linebreaks }}</p>
         <!-- O filtro linebreaks assegura que entradas extensas de t4exto incluam quebras de
          linha em um formato compreendido pelos navegadores -->
+
+        <p>
+            <a href="{% url 'learning_logs:edit_entry' entry.id %}">
+            Editar entrada</a></p>
     </li>
     {% empty %}
     <li>Não existem entradas para este tópico</li>

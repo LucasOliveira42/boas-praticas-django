@@ -5,10 +5,28 @@
     O objetivo do base.html é criar um esqueleto base que será reutilizado todas ou
 em quase todas as páginas da aplicação -->
 <p>
-    <a href="{% url 'learning_logs:index' %}">Registros de Aprendizagem</a>
-    <a href="{% url 'learning_logs:topics' %}">Tópicos</a>
+    <a href="{% url 'learning_logs:index' %}">Registros de Aprendizagem</a> -
+    <a href="{% url 'learning_logs:topics' %}">Tópicos</a> -
+    <!-- No sistema de autentifica~c"ao do Django, cada template tem um objeto user disponível
+       que sempre tem um conjunto de atributos is_authenticated o atributo é true se o usuário
+       estiver logado e false se não estiver. Esse atributo possibilita exibir uma mensagem oara 
+       usuários autentificados e outra para usuários não autentificados  -->
+    {% if user.is_authenticated %}
+        Olá, {{ user.username }}.
+    {% else %}
+        <a href="{% url 'accounts:register' %}">Registrar</a> -
+        <a href="{% url 'accounts:login' %}">Login</a>
+    {% endif %}
 </p>
 
 {% block content %}{% endblock content %}
  <!-- Cria o sistema de bloco de conteúdo, uma vez que esta página for extendida em uma
   outra página, este código será implementado acima de onde o bloco de conteúdo for implementado  -->
+
+{% if user.is_authenticated %}
+<hr />
+<form action="{% url 'accounts:logout' %}", method="post">
+    {% csrf_token %}
+    <button name="submit">Logout</button>
+</form>
+{% endif %}

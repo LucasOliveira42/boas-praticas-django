@@ -1,16 +1,24 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.http import Http404
+
 from .models import Topic, Entry
 from .forms import TopicForm, EntryForm
+from common.util import user_verifier
 
 def index(request):
     """A página inicial do Registro de Aprendizagem"""
     return render(request, 'learning_logs/index.html')
 
 
+# Inserido o decorator para modificar o comportamento dessa função, logo, apenas usuários cadastrados 
+# poderão requisitar o acesso a esta página
+@login_required
 def topics(request):
     """Mostra todos os tópicos"""
-    topics = Topic.objects.order_by('date_added')
-    """busca na tabela Topics dentro do banco de dados todos os objetos e os organiza pela linha data"""
+    topics = Topic.objects.filter(owner=request.user).order_by('date_added')
+    """busca na tabela Topics dentro do banco de dados todos os objetos que sejam do dono que está 
+    logado e os organiza pela linha data"""
     
     context = {'topics' : topics}
     """"Cria o dicionário de contexto que será enviado para o template trabalhar, a nomeação da
@@ -19,10 +27,16 @@ def topics(request):
     return render(request, 'learning_logs/topics.html', context)
 
 
+@login_required
 def topic(request,topic_id):
     """Mostra um único tópico e todas as suas entradas"""
     topic = Topic.objects.get(id=topic_id)
     """Essa querry busca apenas o objeto que tiver o ID específico q está sendo informado"""
+
+    #verifica se o tópico pertence ao usuário atual
+    user_verifier(topic, request)
+    #if topic.owner != request.user:
+    #    raise Http404
 
     entries = topic.entry_set.order_by('-date_added')
     """Obtemos todas as entradas associadas a este tópico em específico e fazemos a ordenação
@@ -35,6 +49,7 @@ def topic(request,topic_id):
     return render(request, 'learning_logs/topic.html', context)
 
 
+@login_required
 def new_topic(request):
     if request.method != 'POST':
         # Nenhum dado enviado; cria um formulário em branco
@@ -48,7 +63,9 @@ def new_topic(request):
 
         if form.is_valid():
             # é importante realizar a verificação da validade dos dados antes de salva-los no bd
-            form.save()
+            new_topic = form.save(commit=False)
+            new_topic.owner = request.user
+            new_topic.save()
             return redirect('learning_logs:topics')
         
     # Exibe um formulário em branco ou inválido
@@ -56,8 +73,11 @@ def new_topic(request):
     return render(request, 'learning_logs/new_topic.html', context)
 
 
+@login_required
 def new_entry(request, topic_id):
     topic = Topic.objects.get(id=topic_id)
+    user_verifier(topic, request)
+
 
     if request.method != "POST":
         #nenhum dado enviado, cria um formulário em branco
@@ -78,10 +98,13 @@ def new_entry(request, topic_id):
     return render(request, 'learning_logs/new_entry.html', context)
 
 
+@login_required
 def edit_entry(request, entry_id):
     """Edita uma entrada existente"""
     entry = Entry.objects.get(id=entry_id)
     topic = entry.topic
+    user_verifier(topic, request)
+
 
     if request.method!='POST':
         # Requisição inicial; pré-preenche formulário com a entrada atual

@@ -1,9 +1,11 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Topic(models.Model):
     """Um tópico que o usuário está aprendendo"""
     text = models.CharField(max_length=200)
     date_added = models.DateTimeField(auto_now_add=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         """Retorna uma representação de string do modelo"""
@@ -57,6 +59,14 @@ datetime.datetime(2025, 2, 17, 3, 56, 38, 609522, tzinfo=datetime.timezone.utc)
 
 >>> t.entry_set.all()
 <QuerySet [<Entry: A abertura é a primeira parte do jogo, mais ou men...>, <Entry: Na fase de abertura do jogo, é importante avançar ...>]>
+
+
+>>> from django.contrib.auth.models import User
+>>> User.objects.all()
+<QuerySet [<User: internet>, <User: lucas>]>
+
+>>> for user in User.objects.all():
+...     print(user.username, user.id)
 
 Para finalizaro Shell, basta apertar ctrl+D, ou ctrl+z no windows e enter 
 """

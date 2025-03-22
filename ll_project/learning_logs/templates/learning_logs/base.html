@@ -1,32 +1,76 @@
- <!-- Todo o sistema de pastas(templates e learning_logs) precisa ser add
-  manualmente à aplicação learning_logs, acredito que a redundância na
-  nomenclatura das pastas seja para facilitar o referenciamento e identificação
-  dentro do código.
-    O objetivo do base.html é criar um esqueleto base que será reutilizado todas ou
-em quase todas as páginas da aplicação -->
-<p>
-    <a href="{% url 'learning_logs:index' %}">Registros de Aprendizagem</a> -
-    <a href="{% url 'learning_logs:topics' %}">Tópicos</a> -
-    <!-- No sistema de autentifica~c"ao do Django, cada template tem um objeto user disponível
-       que sempre tem um conjunto de atributos is_authenticated o atributo é true se o usuário
-       estiver logado e false se não estiver. Esse atributo possibilita exibir uma mensagem oara 
-       usuários autentificados e outra para usuários não autentificados  -->
-    {% if user.is_authenticated %}
-        Olá, {{ user.username }}.
-    {% else %}
-        <a href="{% url 'accounts:register' %}">Registrar</a> -
-        <a href="{% url 'accounts:login' %}">Login</a>
-    {% endif %}
-</p>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="uft-8">
+    <meta name="viewport" content="width=device-widith, initial-scale=1">
+    <title>Registro de Aprendizagem</title>
 
-{% block content %}{% endblock content %}
- <!-- Cria o sistema de bloco de conteúdo, uma vez que esta página for extendida em uma
-  outra página, este código será implementado acima de onde o bloco de conteúdo for implementado  -->
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
 
-{% if user.is_authenticated %}
-<hr />
-<form action="{% url 'accounts:logout' %}", method="post">
-    {% csrf_token %}
-    <button name="submit">Logout</button>
-</form>
-{% endif %}
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-light bg-light mb-4 border">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'learning_logs:index' %}">
+            Registro de Aprendizagem</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'learning_logs:topics' %}">
+                        Tópicos</a>
+                    </li>
+                </ul> <!-- Fim dos links no lado esquerdo da barra de navegação -->
+
+                <!-- Links relacionados à conta-->
+                <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <span class="navbar-text me-2">Olá, {{ user.username }}.
+                        </span></li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'accounts:register' %}">
+                            Registrar</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'accounts:login' %}">
+                            Logar</a></li>
+                    {% endif %}
+
+                </ul><!-- Fum dos links relacionados à conta -->
+
+                {% if user.is_authenticated %}
+                    <form action="{% url 'accounts:logout' %}" method='post'>
+                        {% csrf_token %}
+                        <button name="submit" class="btn btn-outline-secondary btn-sm">
+                            Deslogar</button>
+                    </form>
+                {% endif %}
+
+            </div> <!-- Fecha as partes recolhíveis da barra de navegação -->
+
+        </div> <!-- Fecha o container da barra de navegação -->
+    </nav> <!-- Fim da barra de navegação -->
+
+    <main class="container">
+        <div class="pb-2 mb-2 border-bottom">
+            {% block page_header %}{% endblock page_header %}
+        </div>
+        <div>
+            {% block content %} {% endblock content %}
+        </div>
+    </main>
+
+
+</body>
+</html>

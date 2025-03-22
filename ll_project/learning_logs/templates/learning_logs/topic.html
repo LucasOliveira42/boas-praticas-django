@@ -1,31 +1,34 @@
 {% extends 'learning_logs/base.html' %}
 
+{% block page_header %}
+    <h1>{{ topic.text }}</h1>
+{% endblock page_header %}
+
 {% block content %}
 
-<p>Tópico: {{ topic.text }}</p>
+    <p>
+        <a href="{% url 'learning_logs:new_entry' topic.id %}">Adicione uma nova entrada</a>
+    </p>
 
-<p>Entradas:</p>
-<p>
-    <a href="{% url 'learning_logs:new_entry' topic.id %}">Adiicione uma nova entrada</a>
-</p>
-<ul>
     {% for entry in entries %}
-    <li>
-        <p>{{ entry.date_added|date:'d, M, Y H:i' }}</p>
-        <!-- A linha vertical(|) representa um filtro de template, função do template
-         que modifica o valor de uma variável de template durante o processo de renderização -->
 
-        <p>{{ entry.text|linebreaks }}</p>
+    <div class="card mb-3">
+        <!-- Cabeçalho do card com timestamp e link de edição -->
+        <h4 class="card-header">
+            {{ entry.date_added|date:'d, M, Y H:i' }}
+            <!-- A linha vertical(|) representa um filtro de template, função do template
+            que modifica o valor de uma variável de template durante o processo de renderização -->
+            <small><a href="{% url 'learning_logs:edit_entry' entry.id %}">
+            editar entrada</a></small>
+        </h4>
+        <!-- Corpo do card com texto de entrada -->
+        <div class="card-body">{{ entry.text|linebreaks }}</div>
         <!-- O filtro linebreaks assegura que entradas extensas de t4exto incluam quebras de
-         linha em um formato compreendido pelos navegadores -->
+        linha em um formato compreendido pelos navegadores -->
+    </div>
 
-        <p>
-            <a href="{% url 'learning_logs:edit_entry' entry.id %}">
-            Editar entrada</a></p>
-    </li>
     {% empty %}
-    <li>Não existem entradas para este tópico</li>
+        <p>Não existem entradas para este tópico</p>
     {% endfor %}
-</ul>
 
 {%endblock content%}

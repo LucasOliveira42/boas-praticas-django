@@ -1,11 +1,16 @@
 {% extends 'learning_logs/base.html' %}
  <!-- Vai importar o base.html que está na mesma pasta que este arquivo -->
 
-{% block content %}
- <!-- Faz com que o template pai seja implmentado ao código, fazendo parte da estrutura
-  de bloco de conteúdo -->
+{% block page_header %}
+  <div class="p-3 mb-4 bg-light border rounded-3">
+    <div class="container-fluid py-4">
+      <h1 class="display-3">Gerencie o seu Aprendizado</h1>
+      <p class="lead">Faça o seu próprio registro de aprendizado, e mantenha uma lista dos tópicos 
+        que você está aprendendo. Sempre que aprender alguma coisa nova sobre aquele tópico, faça
+        uma entrada resumindo o que você aprendeu.</p>
 
-<p>Registro de Aprendizagem ajuda você a se manter "atualziado", sobre qualquer tópico
-do seu interesse</p>
-
-{% endblock content %}
+      <a class="btn btn-primary btn-lg mt-1"
+      href="{% url 'accounts:register' %}">Registre-se &raquo;</a>
+    </div>
+  </div>
+{% endblock page_header %}
